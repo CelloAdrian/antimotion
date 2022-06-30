@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Modal, Pressable } from "react-native";
+import * as Keychain from "react-native-keychain";
 import { Accelerometer } from "expo-sensors";
 import { Audio } from "expo-av";
+import PincodeInput from "../components/PincodeInput";
 
 const Homescreen = () => {
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -34,6 +36,24 @@ const Homescreen = () => {
     }
   });
 
+  useEffect(() => {
+    async () => {
+      try {
+        const credentials = await Keychain.getGenericPassword();
+        if (credentials) {
+          console.log(
+            "Credentials successfully loaded for device: " +
+              credentials.username
+          );
+        } else {
+          console.log("No credentials stored.");
+        }
+      } catch (err) {
+        console.log("Keychain couldn't be accessed.");
+      }
+    };
+  }, []);
+
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(
       require("../../assets/audio/tone.mp3")
@@ -58,17 +78,16 @@ const Homescreen = () => {
       >
         <Text>{isActive ? "Inactive" : "Active"}</Text>
       </Pressable>
-      <Modal visible={modalVisible} animationType="slide">
+      <Modal visible={true} animationType="slide">
         <View
           style={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             height: "100%",
-            backgroundColor: "red",
           }}
         >
-          <Text>Modal View</Text>
+          <PincodeInput />
         </View>
       </Modal>
     </View>

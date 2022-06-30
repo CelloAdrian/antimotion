@@ -15,19 +15,19 @@ const Setup = ({ navigation }: any) => {
           const devicename = Device.modelName;
           const password = pin.join("");
           await Keychain.setGenericPassword(devicename, password);
-          try {
-            const credentials = await Keychain.getGenericPassword();
-            if (credentials) {
-              console.log(
-                "Credentials successfully loaded for device: " +
-                  credentials.username
-              );
-            } else {
-              console.log("No credentials stored.");
-            }
-          } catch (err) {
-            console.log("Keychain couldn't be accessed.");
-          }
+          // try {
+          //   const credentials = await Keychain.getGenericPassword();
+          //   if (credentials) {
+          //     console.log(
+          //       "Credentials successfully loaded for device: " +
+          //         credentials.username
+          //     );
+          //   } else {
+          //     console.log("No credentials stored.");
+          //   }
+          // } catch (err) {
+          //   console.log("Keychain couldn't be accessed.");
+          // }
         }
       };
       console.log("pin length is 4");
