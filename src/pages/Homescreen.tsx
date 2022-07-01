@@ -60,25 +60,6 @@ const Homescreen = () => {
         };
 
         getCredentials();
-
-        // async () => {
-        //   try {
-        //     const credentials = await Keychain.getGenericPassword();
-        //     if (credentials) {
-        //       console.log(
-        //         "Credentials successfully loaded for device: " +
-        //           credentials.username
-        //       );
-        // if (pin.length === 4 && pin.join("") === credentials.password) {
-        //   console.log("Pin is correct!");
-        // }
-        //     } else {
-        //       console.log("No credentials stored.");
-        //     }
-        //   } catch (err) {
-        //     console.log("Keychain couldn't be accessed.");
-        //   }
-        // };
       }
     } else {
       Accelerometer.removeAllListeners();

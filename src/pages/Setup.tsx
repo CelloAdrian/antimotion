@@ -17,7 +17,6 @@ const Setup = ({ navigation }: any) => {
               Device.modelName.replace(/\s/g, ""),
               pin.join("")
             );
-            console.log("test4");
           }
         } catch (err) {
           throw err;
@@ -25,7 +24,6 @@ const Setup = ({ navigation }: any) => {
       };
 
       saveCredentials();
-      console.log("pin length is 4");
       navigation.navigate("Homescreen");
     }
   });
