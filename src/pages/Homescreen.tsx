@@ -55,7 +55,7 @@ const Homescreen = () => {
               }
             }
           } catch (err) {
-            console.log(err);
+            throw err;
           }
         };
 

@@ -20,7 +20,7 @@ const Setup = ({ navigation }: any) => {
             console.log("test4");
           }
         } catch (err) {
-          console.log(err);
+          throw err;
         }
       };
 
