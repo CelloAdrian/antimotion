@@ -43,6 +43,12 @@ const Homescreen = () => {
                 if (pin.length === 4 && pin.join("") === res) {
                   console.log("Pin is correct!");
                   // we reset stuff here
+                  setAccel({ x: 0, y: 0, z: 0 });
+                  setPin([]);
+                  setModalVisible(false);
+                  setIsActive(true);
+                } else {
+                  console.log("Pin is wrong!");
                 }
               } else {
                 console.log("No values stored under that key");
