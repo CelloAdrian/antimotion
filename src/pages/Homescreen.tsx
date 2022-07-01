@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Modal, Pressable } from "react-native";
-import * as Keychain from "react-native-keychain";
 import { Accelerometer } from "expo-sensors";
 import { Audio } from "expo-av";
+import * as Device from "expo-device";
+import * as SecureStore from "expo-secure-store";
 import PincodeInput from "../components/PincodeInput";
 
 const Homescreen = () => {
   const [isActive, setIsActive] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [accel, setAccel] = useState({ x: 0, y: 0, z: 0 });
+  const [pin, setPin] = useState<Array<number>>([]);
 
   const THRESHOLD = 0.1;
 
   useEffect(() => {
     if (!isActive) {
-      Accelerometer.setUpdateInterval(100);
+      Accelerometer.setUpdateInterval(500);
       Accelerometer.addListener((accelerometerData) => {
         setAccel(accelerometerData);
       });
@@ -30,29 +32,52 @@ const Homescreen = () => {
         playSound();
         Accelerometer.removeAllListeners();
         setModalVisible(true);
+
+        const getCredentials = async () => {
+          try {
+            if (Device.modelName !== null) {
+              let res = await SecureStore.getItemAsync(
+                Device.modelName.replace(/\s/g, "")
+              );
+              if (res) {
+                if (pin.length === 4 && pin.join("") === res) {
+                  console.log("Pin is correct!");
+                  // we reset stuff here
+                }
+              } else {
+                console.log("No values stored under that key");
+              }
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        };
+
+        getCredentials();
+
+        // async () => {
+        //   try {
+        //     const credentials = await Keychain.getGenericPassword();
+        //     if (credentials) {
+        //       console.log(
+        //         "Credentials successfully loaded for device: " +
+        //           credentials.username
+        //       );
+        // if (pin.length === 4 && pin.join("") === credentials.password) {
+        //   console.log("Pin is correct!");
+        // }
+        //     } else {
+        //       console.log("No credentials stored.");
+        //     }
+        //   } catch (err) {
+        //     console.log("Keychain couldn't be accessed.");
+        //   }
+        // };
       }
     } else {
       Accelerometer.removeAllListeners();
     }
   });
-
-  useEffect(() => {
-    async () => {
-      try {
-        const credentials = await Keychain.getGenericPassword();
-        if (credentials) {
-          console.log(
-            "Credentials successfully loaded for device: " +
-              credentials.username
-          );
-        } else {
-          console.log("No credentials stored.");
-        }
-      } catch (err) {
-        console.log("Keychain couldn't be accessed.");
-      }
-    };
-  }, []);
 
   async function playSound() {
     const { sound } = await Audio.Sound.createAsync(
@@ -78,7 +103,7 @@ const Homescreen = () => {
       >
         <Text>{isActive ? "Inactive" : "Active"}</Text>
       </Pressable>
-      <Modal visible={true} animationType="slide">
+      <Modal visible={modalVisible} animationType="slide">
         <View
           style={{
             display: "flex",
@@ -87,7 +112,10 @@ const Homescreen = () => {
             height: "100%",
           }}
         >
-          <PincodeInput />
+          <PincodeInput
+            pinLength={pin?.length}
+            keypadOnPress={(i: number) => setPin((pin) => [...(pin || []), i])}
+          />
         </View>
       </Modal>
     </View>

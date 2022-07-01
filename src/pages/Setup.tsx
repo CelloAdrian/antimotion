@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import * as Keychain from "react-native-keychain";
 import * as Device from "expo-device";
+import * as SecureStore from "expo-secure-store";
 import PincodeInput from "../components/PincodeInput";
 
 const Setup = ({ navigation }: any) => {
@@ -10,26 +10,21 @@ const Setup = ({ navigation }: any) => {
     console.log("Current pin : ", pin);
 
     if (pin?.length === 4) {
-      async () => {
-        if (Device.modelName !== null) {
-          const devicename = Device.modelName;
-          const password = pin.join("");
-          await Keychain.setGenericPassword(devicename, password);
-          // try {
-          //   const credentials = await Keychain.getGenericPassword();
-          //   if (credentials) {
-          //     console.log(
-          //       "Credentials successfully loaded for device: " +
-          //         credentials.username
-          //     );
-          //   } else {
-          //     console.log("No credentials stored.");
-          //   }
-          // } catch (err) {
-          //   console.log("Keychain couldn't be accessed.");
-          // }
+      const saveCredentials = async () => {
+        try {
+          if (Device.modelName !== null) {
+            await SecureStore.setItemAsync(
+              Device.modelName.replace(/\s/g, ""),
+              pin.join("")
+            );
+            console.log("test4");
+          }
+        } catch (err) {
+          console.log(err);
         }
       };
+
+      saveCredentials();
       console.log("pin length is 4");
       navigation.navigate("Homescreen");
     }
