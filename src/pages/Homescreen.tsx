@@ -5,6 +5,7 @@ import { Audio } from "expo-av";
 import * as Device from "expo-device";
 import * as SecureStore from "expo-secure-store";
 import PincodeInput from "../components/PincodeInput";
+import { Sound } from "expo-av/build/Audio";
 
 const Homescreen = () => {
   const [isActive, setIsActive] = useState<boolean>(true);
@@ -47,6 +48,7 @@ const Homescreen = () => {
                   setPin([]);
                   setModalVisible(false);
                   setIsActive(true);
+                  stopSound();
                 } else {
                   console.log("Pin is wrong!");
                 }
@@ -71,6 +73,13 @@ const Homescreen = () => {
       require("../../assets/audio/tone.mp3")
     );
     await sound.playAsync();
+  }
+
+  async function stopSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("../../assets/audio/tone.mp3")
+    );
+    await sound.stopAsync();
   }
 
   return (
